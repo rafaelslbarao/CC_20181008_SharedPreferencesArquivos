@@ -2,25 +2,19 @@ package br.com.datamob.sharedpreferencesarquivos;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatEditText;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Paths;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -92,15 +86,20 @@ public class MainActivity extends AppCompatActivity
 
     private void salvaOpcao(String tipoSelecionado)
     {
+        //Abre o SharedPreferences
         SharedPreferences sharedPreferences = getSharedPreferences(NOME_CONFIGURACOES, Context.MODE_PRIVATE);
+        //Cria objeto responsável por editar o SharedPreferences
         SharedPreferences.Editor editor = sharedPreferences.edit();
+        //Salva a informação que é composta po um nome e pelo valor
         editor.putString("TIPO", tipoSelecionado);
         editor.apply();
     }
 
     private void carregaOpcao()
     {
+        //Abre o SharedPreferences
         SharedPreferences sharedPreferences = getSharedPreferences(NOME_CONFIGURACOES, Context.MODE_PRIVATE);
+        //Realiza leitura da informação passando o nome
         String tipo = sharedPreferences.getString("TIPO", null);
         if (tipo != null)
         {
@@ -112,24 +111,47 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    private File getArquivoExterno()
+    {
+        File file = null;
+        //Pega o diretório externo da aplicação
+        File externalStorageDirectory = getExternalFilesDir(null);
+        //Cria uma pasta no diretório
+        File directory = new File(externalStorageDirectory, NOME_PASTA);
+        directory.mkdirs();
+        //Cria um referêcia para o arquivo
+        file = new File(directory, NOME_ARQUIVO);
+        return file;
+    }
+
+    private File getArquivoInterno()
+    {
+        File file = null;
+        //Cria uma referência para um arquivo e uma pasta no diretório interno da aplicação
+        file = new File(getDir(NOME_PASTA, Context.MODE_PRIVATE), NOME_ARQUIVO);
+        return file;
+    }
+
+    private File getArquivo(int tipo)
+    {
+        File file = null;
+        switch (tipo)
+        {
+            case R.id.rbExterno:
+                file = getArquivoExterno();
+                break;
+            case R.id.rbInterno:
+                file = getArquivoInterno();
+                break;
+        }
+        return file;
+    }
+
     private void carregaArquivo()
     {
         etTexto.setText("");
         //
-        File file = null;
-        switch (rgTipo.getCheckedRadioButtonId())
-        {
-            case R.id.rbExterno:
-                File externalStorageDirectory = getExternalFilesDir(null);
-                File directory = new File(externalStorageDirectory, NOME_PASTA);
-                directory.mkdirs();
-                file = new File(directory, NOME_ARQUIVO);
-                break;
-            case R.id.rbInterno:
-                file = new File(getDir(NOME_PASTA, Context.MODE_PRIVATE), NOME_ARQUIVO);
-
-                break;
-        }
+        File file = getArquivo(rgTipo.getCheckedRadioButtonId());
         //
         if (file != null && file.exists())
         {
@@ -154,19 +176,7 @@ public class MainActivity extends AppCompatActivity
 
     private void salvaArquivo(int tipo)
     {
-        File file = null;
-        switch (tipo)
-        {
-            case R.id.rbExterno:
-                File externalStorageDirectory = getExternalFilesDir(null);
-                File directory = new File(externalStorageDirectory, NOME_PASTA);
-                directory.mkdirs();
-                file = new File(directory, NOME_ARQUIVO);
-                break;
-            case R.id.rbInterno:
-                file = new File(getDir(NOME_PASTA, Context.MODE_PRIVATE), NOME_ARQUIVO);
-                break;
-        }
+        File file = getArquivo(tipo);
         //
         if(file != null)
         {
@@ -192,19 +202,8 @@ public class MainActivity extends AppCompatActivity
     {
         etTexto.setText("");
         //
-        File file = null;
-        switch (rgTipo.getCheckedRadioButtonId())
-        {
-            case R.id.rbExterno:
-                File externalStorageDirectory = getExternalFilesDir(null);
-                File directory = new File(externalStorageDirectory, NOME_PASTA);
-                directory.mkdirs();
-                file = new File(directory, NOME_ARQUIVO);
-                break;
-            case R.id.rbInterno:
-                file = new File(getDir(NOME_PASTA, Context.MODE_PRIVATE), NOME_ARQUIVO);
-                break;
-        }
+        File file = getArquivo(rgTipo.getCheckedRadioButtonId());
+        //
         if(file != null)
         {
             if(file.exists())
