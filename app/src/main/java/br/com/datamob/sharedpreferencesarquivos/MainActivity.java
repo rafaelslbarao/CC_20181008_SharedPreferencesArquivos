@@ -155,10 +155,9 @@ public class MainActivity extends AppCompatActivity
         //
         if (file != null && file.exists())
         {
-            FileReader fileReader = null;
             try
             {
-                fileReader = new FileReader(file);
+                FileReader fileReader = new FileReader(file);
                 char[] data = new char[(int) file.length()];
                 fileReader.read(data);
                 etTexto.setText(new String(data));
