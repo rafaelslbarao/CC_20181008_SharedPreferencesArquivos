@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">SharedPreferencesArquivos</string>
+    <string name="Interno">Interno</string>
+    <string name="Externo">Externo</string>
+    <string name="Apagar">Apagar</string>
+    <string name="DadosArquivo">Dados Arquivo</string>
+</resources>
