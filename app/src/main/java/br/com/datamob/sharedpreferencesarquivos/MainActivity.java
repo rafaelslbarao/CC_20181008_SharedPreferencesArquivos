@@ -1,7 +1,10 @@
 package br.com.datamob.sharedpreferencesarquivos;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Environment;
+import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatEditText;
@@ -15,6 +18,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -87,27 +91,45 @@ public class MainActivity extends AppCompatActivity
     private void salvaOpcao(String tipoSelecionado)
     {
         //Abre o SharedPreferences
-        SharedPreferences sharedPreferences = getSharedPreferences(NOME_CONFIGURACOES, Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences =
+                getSharedPreferences(NOME_CONFIGURACOES
+                        , Context.MODE_PRIVATE);
+
         //Cria objeto responsável por editar o SharedPreferences
         SharedPreferences.Editor editor = sharedPreferences.edit();
+
         //Salva a informação que é composta po um nome e pelo valor
         editor.putString("TIPO", tipoSelecionado);
+
         editor.apply();
     }
 
     private void carregaOpcao()
     {
-        //Abre o SharedPreferences
-        SharedPreferences sharedPreferences = getSharedPreferences(NOME_CONFIGURACOES, Context.MODE_PRIVATE);
-        //Realiza leitura da informação passando o nome
-        String tipo = sharedPreferences.getString("TIPO", null);
-        if (tipo != null)
+        try
         {
-            if (tipo.equalsIgnoreCase("Externo"))
-                ((RadioButton) findViewById(R.id.rbExterno)).setChecked(true);
-            else if (tipo.equalsIgnoreCase("Interno"))
-                ((RadioButton) findViewById(R.id.rbInterno)).setChecked(true);
+            //Abre o SharedPreferences
+            SharedPreferences sharedPreferences
+                    = getSharedPreferences(NOME_CONFIGURACOES
+                    , Context.MODE_PRIVATE);
 
+            Map<String, ?> all = sharedPreferences.getAll();
+            String tipo1 = (String) all.get("TIPO");
+
+            //Realiza leitura da informação passando o nome
+            String tipo = sharedPreferences.getString("TIPO", null);
+            if (tipo != null)
+            {
+                if (tipo.equalsIgnoreCase("Externo"))
+                    ((RadioButton) findViewById(R.id.rbExterno)).setChecked(true);
+                else if (tipo.equalsIgnoreCase("Interno"))
+                    ((RadioButton) findViewById(R.id.rbInterno)).setChecked(true);
+
+            }
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
         }
     }
 
@@ -116,19 +138,26 @@ public class MainActivity extends AppCompatActivity
         File file = null;
         //Pega o diretório externo da aplicação
         File externalStorageDirectory = getExternalFilesDir(null);
+        //Pega diretório DCIM do Android
+        File dcim = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
+        //Pega diretório raiz do sdcard
+        File raiz = Environment.getExternalStorageDirectory();
+        //
         //Cria uma pasta no diretório
         File directory = new File(externalStorageDirectory, NOME_PASTA);
         directory.mkdirs();
         //Cria um referêcia para o arquivo
-        file = new File(directory, NOME_ARQUIVO);
+        file = new File(raiz, NOME_ARQUIVO);
         return file;
     }
 
     private File getArquivoInterno()
     {
         File file = null;
+        //Cria uma pasta no diretório
+        File directory = getDir(NOME_PASTA, Context.MODE_PRIVATE);
         //Cria uma referência para um arquivo e uma pasta no diretório interno da aplicação
-        file = new File(getDir(NOME_PASTA, Context.MODE_PRIVATE), NOME_ARQUIVO);
+        file = new File(directory, NOME_ARQUIVO);
         return file;
     }
 

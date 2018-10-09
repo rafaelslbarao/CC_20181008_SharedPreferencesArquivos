@@ -22,12 +22,14 @@
             android:id="@+id/rbInterno"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
+            android:textSize="20sp"
             android:layout_marginHorizontal="16dp"
             android:text="@string/Interno" />
 
 
         <android.support.v7.widget.AppCompatRadioButton
             android:id="@+id/rbExterno"
+            android:textSize="20sp"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
             android:layout_marginHorizontal="16dp"
@@ -51,7 +53,7 @@
         android:layout_width="match_parent"
         android:layout_height="4dp"
         android:layout_marginHorizontal="16dp"
-
+        android:textSize="20sp"
         android:layout_marginTop="8dp"
         android:background="@color/colorPrimaryDark"
         app:layout_constraintTop_toBottomOf="@id/btApagar" />
@@ -70,6 +72,7 @@
 
     <android.support.v7.widget.AppCompatEditText
         android:id="@+id/etTexto"
+        android:textSize="20sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
